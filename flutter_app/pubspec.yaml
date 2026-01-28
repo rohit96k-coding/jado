@@ -1,0 +1,39 @@
+name: sami_voice_assistant
+description: A modern AI Voice Assistant Mobile Application.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # Core Packages
+  speech_to_text: ^7.0.0
+  flutter_tts: ^3.8.3
+  permission_handler: ^11.0.1
+  avatar_glow: ^2.0.2
+  google_fonts: ^6.1.0
+  socket_io_client: ^2.0.3
+  url_launcher: ^6.2.1
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+  flutter_launcher_icons: ^0.13.1
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/sami_logo.png"
+  min_sdk_android: 21
+  adaptive_icon_background: "#000000"
+  adaptive_icon_foreground: "assets/sami_logo.png"

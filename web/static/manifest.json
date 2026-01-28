@@ -1,0 +1,16 @@
+{
+    "name": "SAMi Remote",
+    "short_name": "SAMi",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#050005",
+    "theme_color": "#ff00ff",
+    "description": "Mobile Remote Interface for SAMi AI",
+    "icons": [
+        {
+            "src": "logo.png",
+            "sizes": "1024x1024",
+            "type": "image/png"
+        }
+    ]
+}

@@ -1,0 +1,3 @@
+@echo off
+echo Starting SAMi Brain (Local AI)...
+"C:\Users\sagar\AppData\Local\Programs\Ollama\ollama.exe" run llama3

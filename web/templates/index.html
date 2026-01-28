@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAMi Monitor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=mobile_fix_3">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <meta name="theme-color" content="#050005">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}?v=mobile_fix_2" defer></script>
+</head>
+
+<body>
+    <canvas id="matrix-bg"></canvas>
+    <!-- <div style="color: white; padding: 10px; text-align: center; font-family: sans-serif;">SYSTEM LOADING...</div> -->
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>SAMi</h1>
+            <div class="status-indicator">ONLINE</div>
+        </header>
+
+        <!-- Main Content Grid -->
+        <main class="grid-layout">
+
+            <!-- Left Panel: System Stats -->
+            <section class="panel left-panel">
+                <h2>SYSTEM STATUS</h2>
+
+                <div class="stat-box">
+                    <span>CPU LOAD</span>
+                    <div class="progress-bar">
+                        <div id="cpu-bar" class="fill" style="width: 0%"></div>
+                    </div>
+                    <div id="cpu-text" class="stat-value">0%</div>
+                </div>
+
+                <div class="stat-box">
+                    <span>MEMORY (RAM)</span>
+                    <div class="progress-bar">
+                        <div id="ram-bar" class="fill" style="width: 0%"></div>
+                    </div>
+                    <div id="ram-text" class="stat-value">0%</div>
+                </div>
+
+                <div class="stat-box">
+                    <span>STORAGE (C:)</span>
+                    <div class="progress-bar">
+                        <div id="disk-bar" class="fill" style="width: 0%"></div>
+                    </div>
+                    <div id="disk-text" class="stat-value">0%</div>
+                </div>
+
+                <div class="stat-box info-box">
+                    <div id="clock" class="large-text">--:--</div>
+                    <div id="date" class="small-text">--</div>
+                </div>
+
+                <div class="stat-box info-box">
+                    <span>WEATHER</span>
+                    <div id="weather" class="medium-text">Loading...</div>
+                </div>
+
+                <div class="stat-box">
+                    <span>SECURITY</span>
+                    <div class="data-text">SCANNING...</div>
+                </div>
+            </section>
+
+            <!-- Center Panel: Robot Face & Live Screen -->
+            <section class="center-panel">
+                <div class="mode-switch">
+                    <button id="mode-robot" class="mode-btn active">AI AVATAR</button>
+                    <button id="mode-screen" class="mode-btn">LIVE SCREEN</button>
+                </div>
+
+                <!-- View 1: Robot Avatar -->
+                <div id="view-robot" class="view-container active">
+                    <div class="robot-container">
+                        <div class="robot-head">
+                            <div class="antenna left"><div class="bulb"></div></div>
+                            <div class="antenna right"><div class="bulb"></div></div>
+                            <div class="face-screen">
+                                <div class="eyes">
+                                    <div class="eye left"></div>
+                                    <div class="eye right"></div>
+                                </div>
+                                <div class="mouth"></div>
+                            </div>
+                        </div>
+                        <div class="robot-body">
+                            <div class="core-light"></div>
+                        </div>
+                        <div class="hands">
+                            <div class="hand left"></div>
+                            <div class="hand right"></div>
+                        </div>
+                        <div class="levitation-shadow"></div>
+                    </div>
+                </div>
+
+                <!-- View 2: Live Screen -->
+                <div id="view-screen" class="view-container" style="display: none;">
+                    <div class="live-screen-wrapper">
+                        <img id="live-feed" src="" alt="Live Desktop Stream" class="live-feed-img">
+                        <div class="overlay-text">LIVE DESKTOP FEED</div>
+                    </div>
+                </div>
+
+                <!-- Waveform Animation (New Feature) -->
+                <div class="waveform-container">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+
+                <div id="listening-status" class="status-text">INITIALIZING...</div>
+
+                <!-- Mic Button & Controls -->
+                <div class="mic-container" style="margin-top: 30px; gap: 20px;">
+                    <!-- Desktop Mic Status (Visual Only) -->
+                    <div id="mic-btn" class="mic-button active" title="Desktop Mic Status">
+                        <svg viewBox="0 0 24 24" class="mic-icon">
+                            <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z" />
+                            <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
+                        </svg>
+                        <div style="font-size: 10px; margin-top: 5px; color: #aaa;">PC MIC</div>
+                    </div>
+
+                    <!-- Mobile Mic (Active) -->
+                    <div id="mobile-mic-btn" class="mic-button mobile-btn" title="Tap to Speak from Phone">
+                        <svg viewBox="0 0 24 24" class="mic-icon">
+                            <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z" />
+                            <path d="M11 10h2v2h-2zM11 6h2v2h-2zM11 12h2v2h-2z" />
+                        </svg>
+                        <div style="font-size: 10px; margin-top: 5px; color: #ff00ff;">PHONE MIC</div>
+                    </div>
+                </div>
+
+                <!-- Install App Button (Hidden by default) -->
+                <button id="install-btn" class="install-button" style="display: none;">
+                    <svg viewBox="0 0 24 24" class="install-icon">
+                        <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
+                    </svg>
+                    INSTALL SAMi APP
+                </button>
+            </section>
+
+            <!-- Right Panel: Conversation Log -->
+            <section class="panel right-panel">
+                <h2>LOGS</h2>
+                <div id="conversation-log" class="log-container">
+                    <!-- Messages will appear here -->
+                    <div class="log-entry system">System initialized.</div>
+                </div>
+                <div class="input-area">
+                    <input type="file" id="image-upload" accept="image/*" style="display: none;">
+                    <button id="upload-btn" title="Upload Image">
+                         <svg viewBox="0 0 24 24" class="icon">
+                            <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/>
+                        </svg>
+                    </button>
+                    <button id="camera-btn" title="Analyze Camera">
+                        <svg viewBox="0 0 24 24" class="icon">
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                        </svg>
+                    </button>
+                    <input type="text" id="user-input" placeholder="Type or use Mic Key..." enterkeyhint="send">
+                    <button id="send-btn">
+                        <svg viewBox="0 0 24 24" class="send-icon">
+                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+                        </svg>
+                    </button>
+                </div>
+            </section>
+
+        </main>
+
+        <footer>
+            <p class="animated-footer-text">SMART ARTIFICIAL MIND INTERFACE</p>
+        </footer>
+    </div>
+</body>
+
+</html>

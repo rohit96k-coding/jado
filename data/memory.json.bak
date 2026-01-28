@@ -1,0 +1,86 @@
+{
+    "user_profile": {},
+    "preferences": {},
+    "history": [
+        {
+            "role": "user",
+            "content": "good night"
+        },
+        {
+            "role": "model",
+            "content": "Good night, Sir. Systems going to standby."
+        },
+        {
+            "role": "user",
+            "content": "close all backgroung applications"
+        },
+        {
+            "role": "model",
+            "content": "I don't have a specific kill command for all backgroung applications yet."
+        },
+        {
+            "role": "user",
+            "content": "close all application"
+        },
+        {
+            "role": "model",
+            "content": "I don't have a specific kill command for all application yet."
+        },
+        {
+            "role": "user",
+            "content": "close notepad"
+        },
+        {
+            "role": "model",
+            "content": "Closed Notepad."
+        },
+        {
+            "role": "user",
+            "content": "close norton"
+        },
+        {
+            "role": "model",
+            "content": "I don't have a specific kill command for norton yet."
+        },
+        {
+            "role": "user",
+            "content": "thank you"
+        },
+        {
+            "role": "model",
+            "content": "You're welcome."
+        },
+        {
+            "role": "user",
+            "content": "open vs code"
+        },
+        {
+            "role": "model",
+            "content": "Opening Visual Studio Code"
+        },
+        {
+            "role": "user",
+            "content": "close vs code"
+        },
+        {
+            "role": "model",
+            "content": "Closed Visual Studio Code."
+        },
+        {
+            "role": "user",
+            "content": "current time"
+        },
+        {
+            "role": "model",
+            "content": "The current time is 09:54 AM"
+        },
+        {
+            "role": "user",
+            "content": "genrate image hor happy cat"
+        },
+        {
+            "role": "user",
+            "content": "2+2\u00d716+2\u00d796\u221210\u00f72\u00d7196"
+        }
+    ]
+}
