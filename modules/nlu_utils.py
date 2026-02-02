@@ -38,8 +38,8 @@ class NLUUtils:
                 continue
                 
             # 2. Fuzzy Match
-            # cutoff=0.6 allows for typos like 'plya' -> 'play'
-            matches = difflib.get_close_matches(clean_word, self.CORE_VOCAB, n=1, cutoff=0.6)
+            # cutoff=0.8 avoids bad matches like 'ai' -> 'sami'
+            matches = difflib.get_close_matches(clean_word, self.CORE_VOCAB, n=1, cutoff=0.8)
             
             if matches:
                 # Replace with best match

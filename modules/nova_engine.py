@@ -678,8 +678,8 @@ USER: {command}
             }
             
             print(f"Thinking on Local Brain ({config.OLLAMA_MODEL})...")
-            # INCREASED TIMEOUT for Local Model (User's PC is slower)
-            timeout = 30 if config.QUICK_RESPONSE_MODE else 60
+            # MAX TIMEOUT for slow systems (90s)
+            timeout = 90
             response = requests.post(config.OLLAMA_URL, json=payload, timeout=timeout)
             
             if response.status_code == 200:
