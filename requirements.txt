@@ -21,3 +21,12 @@ asyncio
 mss
 Pillow
 spotipy
+build123d
+playwright
+python-kasa
+mediapipe
+opencv-python
+numpy-stl
+fastapi
+uvicorn
+websockets

@@ -13,6 +13,11 @@ from modules.research_agent import ResearchAgent
 from modules.google_integrations import GoogleIntegrations
 from modules.routines import RoutineManager
 from modules.nlu_utils import NLUUtils
+from modules.cad_agent import CADAgent
+from modules.web_agent import WebAgent
+from modules.kasa_agent import KasaAgent
+from modules.printer_agent import PrinterAgent
+from modules.authenticator import Authenticator
 import PIL.Image
 
 class NovaEngine:
@@ -23,7 +28,14 @@ class NovaEngine:
         self.music = MusicManager()
         self.routines = RoutineManager(self)
         self.nlu = NLUUtils()
-        self.research = ResearchAgent(self) # Initialize Research Agent
+        self.research = ResearchAgent(self)
+        
+        # New SAMi V2 Agents
+        self.cad = CADAgent()
+        self.web = WebAgent()
+        self.kasa = KasaAgent()
+        self.printer = PrinterAgent()
+        self.auth = Authenticator()
         
         self.model = None # Default to None (Local/Rule-based)
 
@@ -452,6 +464,37 @@ User: {command}"""
         # Routines
         elif 'routine' in command_lower or command_lower in ['good morning', 'good night', 'start work']:
              return self.routines.execute_routine(command_lower)
+
+        # --- SAMi V2 Features ---
+        
+        # 1. Authenticate (Face Auth)
+        elif 'authenticate' in command_lower or 'face id' in command_lower or 'unlock' in command_lower:
+            success, msg = self.auth.authenticate()
+            return msg
+            
+        # 2. Smart Home (Kasa)
+        elif 'turn' in command_lower and ('on' in command_lower or 'off' in command_lower):
+            # Simple heuristic: "Turn on the light"
+            device_name = command_lower.replace('turn', '').replace('on', '').replace('off', '').replace('the', '').strip()
+            action = 'on' if 'on' in command_lower else 'off'
+            return self.kasa.execute(action, device_name)
+            
+        # 3. CAD Generation
+        elif 'create 3d' in command_lower or 'cad' in command_lower:
+            prompt = command_lower.replace('create 3d', '').replace('cad', '').strip()
+            return self.cad.generate_3d_model(prompt)
+            
+        # 4. Web Agent
+        elif 'go to' in command_lower and ('amazon' in command_lower or 'google' in command_lower or 'web agent' in command_lower):
+            url = command_lower.replace('go to', '').strip()
+            if not url.startswith('http'): url = 'https://' + url
+            if ' ' in url: url = 'https://google.com' # Basic fallback if sentence structure is messy
+            return self.web.navigate(url)
+            
+        # 5. 3D Printing
+        elif 'slice' in command_lower or 'print' in command_lower:
+            stl_path = self.cad.get_latest_stl()
+            return self.printer.slice_and_print(stl_path)
              
         return None
 

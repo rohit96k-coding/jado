@@ -193,7 +193,7 @@ class VoiceEngine:
                 if self.on_update:
                     self.on_update("status", {"status": f"Listening ({language})..."})
                 
-                self.recognizer.adjust_for_ambient_noise(source, duration=0.2) # Faster calib
+                self.recognizer.adjust_for_ambient_noise(source, duration=0.5) # Better calib
                 audio = self.recognizer.listen(source, timeout=5, phrase_time_limit=5)
             
             print("Recognizing...")
@@ -209,10 +209,13 @@ class VoiceEngine:
             return text.lower()
             
         except sr.WaitTimeoutError:
+            print(">> Silence timeout.")
             return ""
         except sr.UnknownValueError:
+            print(">> Audio unclear (or no speech detected).")
             return ""
-        except sr.RequestError:
+        except sr.RequestError as e:
+            print(f">> Speech API Error: {e}")
             self.speak("Sorry, my speech service is down.")
             return ""
         except Exception as e:
